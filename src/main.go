@@ -7,6 +7,7 @@ import (
 	"log"
 	"net/http"
 	"os"
+	"strings"
 	"time"
 )
 
@@ -17,7 +18,7 @@ type ZipCode struct {
 }
 
 func main() {
-	http.HandleFunc("/getZip", handleGetZip)
+	http.HandleFunc("/zipcode", handleGetZip)
 	fmt.Println("Starting web server at port 8081")
 	if err := http.ListenAndServe(":8081", nil); err != nil {
 		log.Fatal(err)
@@ -28,17 +29,23 @@ func handleGetZip(rw http.ResponseWriter, r *http.Request) {
 	//time start
 	start := time.Now()
 
-	if r.URL.Path != "/getZip" {
+	fmt.Fprintln(rw, "INFO: Starting")
+
+	if r.URL.Path != "/zipcode" {
 		http.Error(rw, "404 not found", http.StatusNotFound)
 		return
 	}
+
+	fmt.Fprintln(rw, "INFO: Starting")
 
 	if r.Method != "GET" {
 		http.Error(rw, "Method not supported.", http.StatusNotFound)
 		return
 	}
 
-	search := r.FormValue("search")
+	fmt.Fprintln(rw, "INFO: Starting")
+
+	key := r.FormValue("key")
 
 	//open file
 	f, err := os.Open("zipcode.csv")
@@ -49,16 +56,20 @@ func handleGetZip(rw http.ResponseWriter, r *http.Request) {
 	//close when program ends
 	defer f.Close()
 
+	fmt.Fprintln(rw, "INFO: Starting")
+
 	//read values
 	csvReader := csv.NewReader(f)
 	data, err := csvReader.ReadAll()
 	if err != nil {
 		log.Fatal(err)
 	}
+	fmt.Fprintln(rw, key)
+	fmt.Fprintln(rw, "INFO: Starting...")
 	var resultZipcode []ZipCode
 
 	for _, line := range data {
-		if line[0] == search || line[1] == search || line[2] == search {
+		if line[0] == key || strings.EqualFold(line[1], key) {
 			z := ZipCode{
 				Zipcode:      line[0],
 				Area:         line[1],
@@ -68,11 +79,12 @@ func handleGetZip(rw http.ResponseWriter, r *http.Request) {
 		}
 	}
 
+	fmt.Fprintln(rw, "INFO: Starting")
 	result, err := json.Marshal(resultZipcode)
 	if err != nil {
 		log.Fatal(err)
 	}
-	fmt.Println(string(result))
+	fmt.Fprintln(rw, string(result))
 
 	elapsed := time.Since(start)
 	fmt.Println("Done after: ", elapsed.Milliseconds(), "ms")
