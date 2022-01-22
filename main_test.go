@@ -29,5 +29,27 @@ func TestSingleResult(t *testing.T) {
 		if got != want {
 			t.Errorf("Got %q, want %q", got, want)
 		}
+
+		if response.Code != http.StatusOK {
+			t.Errorf("Did not get correct status, got %d, want %d", response.Code, http.StatusOK)
+		}
+	})
+
+	t.Run("Must return multiple results", func(t *testing.T) {
+		request, _ := http.NewRequest(http.MethodGet, "/zipcode?key=Poblacion", nil)
+		response := httptest.NewRecorder()
+
+		handleZipcode(response, request)
+
+		got := response.Body.String()
+		want := `[{"zipcode":"1210","area":"Poblacion","provinceCity":"Makati"},{"zipcode":"1776","area":"Poblacion","provinceCity":"Muntinlupa"}]`
+
+		if got != want {
+			t.Errorf("Got %q, want %q", got, want)
+		}
+
+		if response.Code != http.StatusOK {
+			t.Errorf("Did not get correct status, got %d, want %d", response.Code, http.StatusOK)
+		}
 	})
 }

@@ -47,8 +47,8 @@ func handleZipcode(rw http.ResponseWriter, r *http.Request) {
 	var err error
 
 	switch r.Method {
-	case "GET":
-		err = handleGetZipCode(rw, r)
+	case http.MethodGet:
+		err = getZipCode(rw, r)
 	}
 
 	if err != nil {
@@ -58,7 +58,7 @@ func handleZipcode(rw http.ResponseWriter, r *http.Request) {
 
 }
 
-func handleGetZipCode(rw http.ResponseWriter, r *http.Request) (err error) {
+func getZipCode(rw http.ResponseWriter, r *http.Request) (err error) {
 	start := time.Now()
 
 	if r.URL.Path != "/zipcode" {
@@ -77,6 +77,7 @@ func handleGetZipCode(rw http.ResponseWriter, r *http.Request) (err error) {
 	f, err := os.Open("data/zipcode.csv")
 	if err != nil {
 		log.Fatal(err)
+		rw.WriteHeader(http.StatusInternalServerError)
 		return
 	}
 
@@ -88,6 +89,7 @@ func handleGetZipCode(rw http.ResponseWriter, r *http.Request) (err error) {
 	data, err := csvReader.ReadAll()
 	if err != nil {
 		log.Fatal(err)
+		rw.WriteHeader(http.StatusInternalServerError)
 		return
 	}
 
@@ -107,6 +109,7 @@ func handleGetZipCode(rw http.ResponseWriter, r *http.Request) (err error) {
 	result, err := json.Marshal(resultZipcode)
 	if err != nil {
 		log.Fatal(err)
+		rw.WriteHeader(http.StatusInternalServerError)
 		return
 	}
 
@@ -116,5 +119,6 @@ func handleGetZipCode(rw http.ResponseWriter, r *http.Request) (err error) {
 	fmt.Println("INFO:", logStr)
 
 	rw.Write(result)
+	rw.WriteHeader(http.StatusOK)
 	return
 }
