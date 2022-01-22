@@ -20,7 +20,7 @@ type ZipCode struct {
 }
 
 func main() {
-	http.HandleFunc("/zipcode", handleGetZip)
+	http.HandleFunc("/zipcode", handleZipcode)
 
 	viper.AddConfigPath(".")
 	viper.SetConfigName("config")
@@ -43,7 +43,22 @@ func main() {
 
 }
 
-func handleGetZip(rw http.ResponseWriter, r *http.Request) {
+func handleZipcode(rw http.ResponseWriter, r *http.Request) {
+	var err error
+
+	switch r.Method {
+	case "GET":
+		err = handleGetZipCode(rw, r)
+	}
+
+	if err != nil {
+		http.Error(rw, err.Error(), http.StatusInternalServerError)
+		return
+	}
+
+}
+
+func handleGetZipCode(rw http.ResponseWriter, r *http.Request) (err error) {
 	start := time.Now()
 
 	if r.URL.Path != "/zipcode" {
@@ -62,6 +77,7 @@ func handleGetZip(rw http.ResponseWriter, r *http.Request) {
 	f, err := os.Open("data/zipcode.csv")
 	if err != nil {
 		log.Fatal(err)
+		return
 	}
 
 	//close when program ends
@@ -72,6 +88,7 @@ func handleGetZip(rw http.ResponseWriter, r *http.Request) {
 	data, err := csvReader.ReadAll()
 	if err != nil {
 		log.Fatal(err)
+		return
 	}
 
 	resultZipcode := []ZipCode{}
@@ -90,13 +107,14 @@ func handleGetZip(rw http.ResponseWriter, r *http.Request) {
 	result, err := json.Marshal(resultZipcode)
 	if err != nil {
 		log.Fatal(err)
+		return
 	}
-
-	fmt.Fprintln(rw, string(result))
 
 	elapsed := time.Since(start)
 
 	logStr := "Key:" + key + ", Result:" + string(result) + ". Completed after " + fmt.Sprint(elapsed.Milliseconds()) + "ms"
 	fmt.Println("INFO:", logStr)
 
+	rw.Write(result)
+	return
 }
