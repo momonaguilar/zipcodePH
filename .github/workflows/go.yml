@@ -29,10 +29,16 @@ jobs:
     - name: Test
       run: go test -v ./...
 
-    - name: send custom message
+    # Doc: https://medium.com/cocoaacademymag/how-to-integrate-github-actions-with-slack-telegram-and-whatsapp-67a4dca0f17d
+    - name: Send notification message to Telegram bot
       uses: appleboy/telegram-action@master
       with:
         to: ${{ secrets.TELEGRAM_TO }}
         token: ${{ secrets.TELEGRAM_TOKEN }}
         message: |
-          Test from github action
+          Github Action Notification
+
+          👩‍💻 ${{ github.actor }} created commit in the repository ${{ github.repository }}
+          💌 Commit message: ${{ github.event.commits[0].message }}
+
+          🧩 See changes: https://github.com/${{ github.repository }}/commit/${{github.sha}}
