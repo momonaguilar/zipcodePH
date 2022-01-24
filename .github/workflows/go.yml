@@ -18,8 +18,21 @@ jobs:
       with:
         go-version: 1.17
 
+    - name: Install dependencies
+      run: |
+        go version
+        go get -u
+
     - name: Build
       run: go build -v ./...
 
     - name: Test
       run: go test -v ./...
+
+    - name: send custom message
+      uses: appleboy/telegram-action@master
+      with:
+        to: ${{ secrets.TELEGRAM_TO }}
+        token: ${{ secrets.TELEGRAM_TOKEN }}
+        message: |
+          Test from github action
