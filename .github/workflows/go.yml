@@ -29,7 +29,13 @@ jobs:
     - name: Test
       run: go test -v ./...
 
+    - name: Get the current branch name
+      shell: bash
+      run: echo "::set-output name=branch::${GITHUB_REF#refs/heads/}"
+      id: branchname
+
     # Doc: https://medium.com/cocoaacademymag/how-to-integrate-github-actions-with-slack-telegram-and-whatsapp-67a4dca0f17d
+    # Doc: https://medium.com/swlh/setting-up-github-actions-for-go-project-ea84f4ed3a40
     - name: Send notification message to Telegram bot
       uses: appleboy/telegram-action@master
       with:
@@ -38,7 +44,8 @@ jobs:
         message: |
           Github Action Notification
 
-          👩‍💻 ${{ github.actor }} created commit in the repository ${{ github.repository }}
+          👨‍💻 ${{ github.actor }} created commit in branch ${{ steps.branchname.outputs.branch }}
+          of repo ${{ github.repository }}
           💌 Commit message: ${{ github.event.commits[0].message }}
 
           🧩 See changes: https://github.com/${{ github.repository }}/commit/${{github.sha}}
