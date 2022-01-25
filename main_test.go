@@ -52,4 +52,22 @@ func TestSingleResult(t *testing.T) {
 			t.Errorf("Did not get correct status, got %d, want %d", response.Code, http.StatusOK)
 		}
 	})
+
+	t.Run("Must return zero result", func(t *testing.T) {
+		request, _ := http.NewRequest(http.MethodGet, "/zipcode?key=anythinginvalid", nil)
+		response := httptest.NewRecorder()
+
+		handleZipcode(response, request)
+
+		got := response.Body.String()
+		want := `[]`
+
+		if got != want {
+			t.Errorf("Got %q, want %q", got, want)
+		}
+
+		if response.Code != http.StatusOK {
+			t.Errorf("Did not get correct status, got %d, want %d", response.Code, http.StatusOK)
+		}
+	})
 }
