@@ -49,6 +49,8 @@ func handleZipcode(rw http.ResponseWriter, r *http.Request) {
 	switch r.Method {
 	case http.MethodGet:
 		err = getZipCode(rw, r)
+	default:
+		fmt.Println("INFO: Unhandled HTTP method.")
 	}
 
 	if err != nil {
@@ -67,6 +69,7 @@ func getZipCode(rw http.ResponseWriter, r *http.Request) (err error) {
 	}
 
 	if r.Method != "GET" {
+		fmt.Println("Here")
 		http.Error(rw, "Method not supported.", http.StatusNotFound)
 		return
 	}

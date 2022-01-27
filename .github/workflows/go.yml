@@ -44,8 +44,8 @@ jobs:
         message: |
           Github Action Notification
 
-          👨‍💻 ${{ github.actor }} created commit in branch ${{ steps.branchname.outputs.branch }}
-          of repo ${{ github.repository }}
+          👨‍💻 ${{ github.actor }} created commit in branch ${{ steps.branchname.outputs.branch }} of repo ${{ github.repository }}
+          
           💌 Commit message: ${{ github.event.commits[0].message }}
 
           🧩 See changes: https://github.com/${{ github.repository }}/commit/${{github.sha}}
