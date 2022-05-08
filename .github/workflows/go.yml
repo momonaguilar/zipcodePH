@@ -37,15 +37,29 @@ jobs:
     # Doc: https://medium.com/cocoaacademymag/how-to-integrate-github-actions-with-slack-telegram-and-whatsapp-67a4dca0f17d
     # Doc: https://medium.com/swlh/setting-up-github-actions-for-go-project-ea84f4ed3a40
     - name: Send notification message to Telegram bot
+      run: echo "Sending notification"
+
+    - if: github.event_name == 'pull_request'
       uses: appleboy/telegram-action@master
       with:
         to: ${{ secrets.TELEGRAM_TO }}
         token: ${{ secrets.TELEGRAM_TOKEN }}
         message: |
-          Github Action Notification
-
-          👨‍💻 ${{ github.actor }} created commit in branch ${{ steps.branchname.outputs.branch }} of repo ${{ github.repository }}
+          Github Alerts
+          👨‍💻 ${{ github.actor }} created PR `${{ steps.branchname.outputs.branch }}` to `main` in repo `${{ github.repository }}, please review.`
+          
+          📜 PR title: ${{ github.event.pull_request.title }}
+          
+          🧩 See PR: https://github.com/${{ github.repository }}/pull/${{ github.event.pull_request.number }}
+    - if: github.event_name != 'pull_request'
+      uses: appleboy/telegram-action@master
+      with:
+        to: ${{ secrets.TELEGRAM_TO }}
+        token: ${{ secrets.TELEGRAM_TOKEN }}
+        message: |
+          Github Alerts
+          👨‍💻 ${{ github.actor }} created commit in branch `${{ steps.branchname.outputs.branch }}` of repo `${{ github.repository }}`
           
           💌 Commit message: ${{ github.event.commits[0].message }}
-
-          🧩 See changes: https://github.com/${{ github.repository }}/commit/${{github.sha}}
+          
+          🧩 See changes: https://github.com/${{ github.repository }}/commit/${{ github.sha }}
