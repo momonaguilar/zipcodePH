@@ -47,3 +47,14 @@ Result:
 ```
 []
 ```
+### 4. Default endpoint
+
+Sample request:
+```
+curl -X GET http://localhost:8085/zipcode?key=momon
+```
+
+Result:
+```
+
+```
