@@ -21,6 +21,7 @@ type ZipCode struct {
 
 func main() {
 	http.HandleFunc("/zipcode", handleZipcode)
+	http.HandleFunc("/", handleZipcode)
 
 	viper.AddConfigPath(".")
 	viper.SetConfigName("config")
