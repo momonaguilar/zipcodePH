@@ -30,7 +30,7 @@ func main() {
 	if err := viper.ReadInConfig(); err != nil {
 		fmt.Println("ERROR: Error reading config file. Err:", err)
 	}
-	viper.SetDefault("APP.PORT", "8081")
+	viper.SetDefault("APP.PORT", "8085")
 	PORT, ok := viper.Get("APP.PORT").(string)
 
 	if !ok {
