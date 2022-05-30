@@ -51,6 +51,7 @@ jobs:
           📜 PR title: ${{ github.event.pull_request.title }}
           
           🧩 See PR: https://github.com/${{ github.repository }}/pull/${{ github.event.pull_request.number }}
+    
     - if: github.event_name != 'pull_request'
       uses: appleboy/telegram-action@master
       with:
