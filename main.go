@@ -119,7 +119,7 @@ func getZipCode(rw http.ResponseWriter, r *http.Request) (err error) {
 
 	elapsed := time.Since(start)
 
-	logStr := "Key:" + key + ", Result:" + string(result) + ". Completed after " + fmt.Sprint(elapsed.Milliseconds()) + "ms"
+	logStr := "Key:" + key + ", Result:" + string(result) + ". Completed after " + fmt.Sprint(elapsed.Milliseconds()) + "ms."
 	fmt.Println("INFO:", logStr)
 
 	rw.Write(result)
