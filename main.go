@@ -124,5 +124,6 @@ func getZipCode(rw http.ResponseWriter, r *http.Request) (err error) {
 
 	rw.Write(result)
 	rw.WriteHeader(http.StatusOK)
+
 	return
 }
